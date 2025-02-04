@@ -12,8 +12,8 @@ def main():
     inputText = "Enter your choice: "
     s = "\n\n" #extra space between menus
     
-    encryptedMessages = []
-    signedMessages = []
+    encryptedMessages = [] #indeces stored as [0] - ecrypted message and [1] - length of message
+    signedMessages = [] #indeces stored as [0] - message and [1] - signature
     
     
     keys = functions.genKey() #keys[0] = e, keys[1] = d, keys[2] = n
@@ -36,11 +36,14 @@ def main():
                 
                 if (userInput == "1"): #send encrypted message
                     messageEncrypt = input("Enter a message: ")
-
+                    
+                    messageLength = len(messageEncrypt)
                     #encrypt message here
+                    messageEncrypt = functions.stringToASCII(messageEncrypt)
+                    #pass this big integer through encryption with public key
                     
                     #send message here
-                    encryptedMessages.append(messageEncrypt)
+                    encryptedMessages.append([messageEncrypt, messageLength])
                     
                     print("Message encrypted and sent." + s)
                 elif (userInput == "2"): #Authenticate a digital signature
@@ -93,7 +96,7 @@ def main():
                             print("The following messages are available: ")
                             
                             for i, j in zip(range(len(encryptedMessages)), encryptedMessages):
-                                print(f"{i+1}. {j}")
+                                print(f"{i+1}. (length = {j[1]})")
                             userInput = input(inputText)
                             
                             try:
@@ -103,13 +106,14 @@ def main():
                                 continue
                             
                             if(int(userInput)-1 in range(len(encryptedMessages))):
+                                decryptedMessage = encryptedMessages[int(userInput)-1][0] #fetch encrypted message from array
                                 #decrypt message
-                                print("Decrypted message: ")
+                                decryptedMessage = functions.ASCIItoString(decryptedMessage) #convert decrypted integer into string
+                                print("Decrypted message: " + decryptedMessage + s)
                                 break
                             else:
                                 print(error)
                                 continue
-                            print(s)
                     else:   #if there are no messages to decrypt
                         print("No messages available to decrypt." + s)
                         

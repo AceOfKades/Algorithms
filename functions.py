@@ -9,7 +9,7 @@ random.seed()
 '''
 2/3/2025
 
-@author Carlos & Kade
+@author: Carlos & Kade
 '''
 
 def testPrime(p): #fermat's little algorithm
@@ -73,5 +73,32 @@ def genKey():
     d = x[0]%phi
     
     return e, d, n
+
+def stringToASCII(string):
+    asciiMessage = "127" # garbage character of length 3 at the start, to be removed at decryption
+    for x in string:
+        char = str(ord(x))
+        if len(char) < 3:
+            if len(char) == 1:
+                char = "00" + char
+            elif len(char) == 2:
+                char = "0" + char
+        asciiMessage += char
+        
+    return int(asciiMessage)
+
+def ASCIItoString(integer):
+    string = ""
+    temp = str(integer)
+    
+    #remove garbage character at start of string
+    temp = temp[3:]
+    
+    for x in range(int(len(temp)/3)):
+        x = temp[:3]
+        string += chr(int(x))
+        temp = temp[3:]
+    
+    return string
     
     

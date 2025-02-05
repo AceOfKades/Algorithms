@@ -101,4 +101,24 @@ def ASCIItoString(integer):
     
     return string
     
+def fastExpo_rec (c,d,n):
+    if d == 0:
+        return 1 
+    if d%2 == 0:
+        t = fastExpo_rec(c,d//2, n)
+        return (t*t)%n
+    else:
+        t = fastExpo_rec(c, d//2,n)
+        return c *(t**2%n)%n
+    
+def EncryptMessage(message,e,n):
+    x = fastExpo_rec(message,e,n)
+    
+    return x 
+    
+def DecryptMessage(message,d,n):
+    EncryptMessage(message,d,n)
+    
+    
+    
     

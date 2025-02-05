@@ -38,8 +38,6 @@ def main():
                     messageEncrypt = input("Enter a message: ")
                     
                     messageLength = len(messageEncrypt)
-                    #encrypt message here
-                    messageEncrypt = functions.stringToASCII(messageEncrypt)
                     #pass this big integer through encryption with public key
                     messageEncrypt = functions.EncryptMessage(messageEncrypt,int(keys[0]),int(keys[2]))
                     #send message here
@@ -50,7 +48,7 @@ def main():
                     if(len(signedMessages) > 0):
                         while True:
                             for i, j in zip(range(len(signedMessages)), signedMessages): #present list of messages availble
-                                print(f"{i+1}. {j}")
+                                print(f"{i+1}. {j[0]}")
                                 
                             userInput = input(inputText)
                             
@@ -62,7 +60,9 @@ def main():
                             
                             if (int(userInput)-1 in range(len(signedMessages))):
                                 #authenticate signature
-                                authentic = True #put authentication here
+                                message = signedMessages[int(userInput)-1][0]
+                                signature = signedMessages[int(userInput)-1][1]
+                                authentic = functions.authenticateSignature(message, signature, keys[0], keys[2])
                                 if authentic:
                                     print("Signature is valid."+ s)
                                 else:
@@ -107,8 +107,7 @@ def main():
                             
                             if(int(userInput)-1 in range(len(encryptedMessages))):
                                 decryptedMessage = encryptedMessages[int(userInput)-1][0] #fetch encrypted message from array
-                                decryptedMessage = functions.DecryptMessage(decryptedMessage,int(keys[1]),int(keys[2]))#decrypt message
-                                decryptedMessage = functions.ASCIItoString(decryptedMessage) #convert decrypted integer into string
+                                decryptedMessage = functions.DecryptMessage(decryptedMessage,int(keys[1]),int(keys[2])) #decrypt message
                                 print("Decrypted message: " + decryptedMessage + s)
                                 break
                             else:
@@ -120,10 +119,10 @@ def main():
                 elif (userInput == "2"): #digital signature
                     signMessage = input("Enter a message: ")
                     
-                    #sign message    
-                    
-                    #send message
-                    signedMessages.append(signMessage)
+                    #generate signature    
+                    signature = functions.EncryptMessage(signMessage, keys[1], keys[2])
+                    #sign+send message
+                    signedMessages.append([signMessage, signature])
                     
                     print("Message signed and sent." + s)
                     

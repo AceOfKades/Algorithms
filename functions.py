@@ -1,6 +1,5 @@
 #header file for all functions
 
-import math
 import random
 import sys
 
@@ -9,7 +8,7 @@ random.seed()
 '''
 2/3/2025
 
-@author: Carlos & Kade
+@author: Carlos & Kade & Carson
 '''
 
 def testPrime(p): #fermat's little algorithm
@@ -112,18 +111,57 @@ def fastExpo_rec (c,d,n):
     else:
         return (c*t) % n  
   
+def chunkMessage(message, chunkSize):
+    return [message[i:i+chunkSize] for i in range(0, len(message), chunkSize)]
+
+def padChunk(chunk, chunkSize):
+    return chunk.zfill(chunkSize)
+
+def calcMaxChunk(n):
+    max_size = len(str(n))-1
+    if max_size%3 != 0:
+        max_size -= max_size%3
+    return max_size
     
-def EncryptMessage(message,e,n):
-    x = fastExpo_rec(message,e,n)
+def EncryptMessage(message, e, n):
+    ascii_message = stringToASCII(message)
     
-    return x 
+    max_chunk_size = calcMaxChunk(n)
     
-def DecryptMessage(message,d,n):
-    x = fastExpo_rec(message,d,n)
+    chunkHold = chunkMessage(str(ascii_message), max_chunk_size)
+    paddedChunks = [padChunk(chunk, max_chunk_size) for chunk in chunkHold]
     
-    return x
+    encryptedChunks = []
+    for chunk in paddedChunks:
+        encryptedChunk = fastExpo_rec(int(chunk), e, n)
+        encryptedChunks.append(str(encryptedChunk))
+    
+    return " ".join(encryptedChunks)
+    
+def DecryptMessage(encryptedMessage, d, n):
+    encryptedChunks = encryptedMessage.split(" ")
+    max_chunk_size = calcMaxChunk(n)
+    
+    decryptedChunks = []
+    for chunk in encryptedChunks:
+        chunkHold = fastExpo_rec(int(chunk), d, n)
+        decryptedChunks.append(str(chunkHold).zfill(max_chunk_size))
+    
+    decryptedChunks[-1] = decryptedChunks[-1].lstrip("0")
+    
+    difference = len(decryptedChunks[-1])%3
+    if (difference != 0):
+        difference = 3-difference
+        decryptedChunks[-1] = decryptedChunks[-1].zfill(difference+len(decryptedChunks[-1]))
+        
+    
+    ascii_message = "".join(decryptedChunks)
+    return ASCIItoString(ascii_message)
  
+def authenticateSignature(message, signature, e, n):
+    decryptSignature = DecryptMessage(signature, e, n)
     
+    return (message == decryptSignature)
     
     
     

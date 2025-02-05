@@ -94,7 +94,7 @@ def ASCIItoString(integer):
     #remove garbage character at start of string
     temp = temp[3:]
     
-    for x in range(int(len(temp)/3)):
+    for x in range(len(temp)//3):
         x = temp[:3]
         string += chr(int(x))
         temp = temp[3:]

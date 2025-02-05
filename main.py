@@ -120,7 +120,7 @@ def main():
                 elif (userInput == "2"): #digital signature
                     signMessage = input("Enter a message: ")
                     
-                    #sign message 
+                    #sign message  
                     
                     #send message
                     signedMessages.append(signMessage)

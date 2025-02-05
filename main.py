@@ -41,7 +41,7 @@ def main():
                     #encrypt message here
                     messageEncrypt = functions.stringToASCII(messageEncrypt)
                     #pass this big integer through encryption with public key
-                    
+                    messageEncrypt = functions.EncryptMessage(messageEncrypt,int(keys[0]),int(keys[2]))
                     #send message here
                     encryptedMessages.append([messageEncrypt, messageLength])
                     
@@ -107,7 +107,7 @@ def main():
                             
                             if(int(userInput)-1 in range(len(encryptedMessages))):
                                 decryptedMessage = encryptedMessages[int(userInput)-1][0] #fetch encrypted message from array
-                                #decrypt message
+                                decryptedMessage = functions.DecryptMessage(decryptedMessage,int(keys[1]),int(keys[2]))#decrypt message
                                 decryptedMessage = functions.ASCIItoString(decryptedMessage) #convert decrypted integer into string
                                 print("Decrypted message: " + decryptedMessage + s)
                                 break
@@ -120,7 +120,7 @@ def main():
                 elif (userInput == "2"): #digital signature
                     signMessage = input("Enter a message: ")
                     
-                    #sign message
+                    #sign message    
                     
                     #send message
                     signedMessages.append(signMessage)

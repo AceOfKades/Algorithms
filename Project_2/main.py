@@ -10,21 +10,42 @@ import random
 
 div = "\n-------------------------\n"
 
+error = "Invalid input\n"
+
 def printArray(array):
     for x in array:
         print(x, end = " ")
     print('\n')
     
-def genArray(n):
+def genArray(n, case_type):
+    
     array = random.sample(range(10*n), n)
+    
+    if case_type == "1":
+        array.sort()
+    elif case_type == "3":
+        array.sort(reverse = True)
+    
     return array
+
+
+def runTest (algorithm, array):
+    t1 = time.perf_counter()
     
-if __name__ == "__main__":
-    #commonly repeated messages held in variable (to prevent typos or inconsistency in messages)
-    caseMenu = f"Case Scenarios for %s {div}1. Best Case\n2. Average Case\n3. Worst Case\n4. Exit %s"
-    nTest = "For N = %d,\t it takes %d seconds"
+    if algorithm == sort.mergeSort:
+        algorithm(array, 0, len(array)-1)
+    else:
+        algorithm(array)
+        
+    t2 = time.perf_counter();
     
-    caseMes = "Select the case: "
+    return t2 - t1
+    
+
+def handleCase(case_type, algorithm):
+    
+    
+    nTest = "For N = %d,\t it takes %.6f seconds"
     nMes = "Do you want to input another N (Y/N)? "
     nWhat = "What is the N? "
     
@@ -32,7 +53,48 @@ if __name__ == "__main__":
     average = "In average case,\n"
     worst = "In worst case,\n"
     
-    error = "Invalid input\n"
+    caseMessages = {
+        "1": best,
+        "2": average,
+        "3": worst
+    }
+
+    print(caseMessages.get(case_type, "Invalid case"))
+    
+    for x in range(3):
+        y = 10 ** (x+2)
+        
+        array = genArray(y, case_type)
+        
+        time = runTest(algorithm, array)
+        
+        print(nTest % (y, time))
+        
+    while True:
+        user = input('\n' + nMes)
+        if user.lower() == "y":
+            user = input(nWhat)
+            try:
+                if case_type == "2": 
+                    array = genArray(int(user))
+                else:
+                    array = genArray(int(user), case_type)
+                    
+                time = runTest(algorithm, array)
+                
+                print(nTest % (int(user), time))
+            except:
+                print(error)
+        else:
+            break
+        
+    
+
+if __name__ == "__main__":
+    #commonly repeated messages held in variable (to prevent typos or inconsistency in messages)
+    caseMenu = f"Case Scenarios for %s Sort {div}1. Best Case\n2. Average Case\n3. Worst Case\n4. Exit %s sort test"
+    
+    caseMes = "Select the case: "
     
     print("Welcome to the test suite of selected sorting algorithms!\n\n")
     
@@ -42,219 +104,62 @@ if __name__ == "__main__":
               "1. Bubble Sort\n",
               "2. Merge Sort\n", 
               "3. Quick Sort\n",
-              "4. ??? Sort\n",
+              "4. Insertion Sort\n",
               "5. Exit")
         user = input("Select a sorting algorithm: ")
         
         if user == "1": #Bubble Sort
             while True:
-                print(caseMenu % ("Bubble Sort", "bubble sort test"))
+                print(caseMenu % ("Bubble", "bubble"))
                 user = input(caseMes) #Choose best, average, worst, exit case
                 print ()
                 
-                if user == "1": #Best Case
-                    print(best)
-                    for x in range(3):
-                        y = 10 ** (x+2)
-                        
-                        array = genArray(y).sort()
-                        
-                        t1 = time.perf_counter()
-                        #call bubble sort on array
-                        t2 = time.perf_counter()
-                        
-                        print(nTest % (y, t2-t1))
-                    while True:
-                        user = input('\n' + nMes)
-                        if user.lower() == "y":
-                            user = input(nWhat)
-                            try:
-                                array = genArray(int(user)).sort()
-                            except:
-                                print(error)
-                            else:
-                                array = genArray(int(user)).sort()
-                                
-                                t1 = time.perf_counter()
-                                #call bubble sort on array
-                                t2 = time.perf_counter()
-                                
-                                print(nTest % (int(user), t2-t1))
-                        else:
-                            break
-                elif user == "2": #Average Case
-                    print(average)
-                    for x in range(3):
-                        y = 10 ** (x+2)
-                        
-                        array = genArray(y)
-                        
-                        t1 = time.perf_counter()
-                        #call bubble sort on array
-                        t2 = time.perf_counter()
-                        
-                        print(nTest % (y, t2-t1))
-                    while True:
-                        user = input('\n' + nMes)
-                        if user.lower() == "y":
-                            user = input(nWhat)
-                            try:
-                                int(user)
-                            except:
-                                print(error)
-                            else:
-                                array = genArray(int(user))
-                                
-                                t1 = time.perf_counter()
-                                #call bubble sort on array
-                                t2 = time.perf_counter()
-                                
-                                print(nTest % (int(user), t2-t1))
-                        else:
-                            break
-                elif user == "3": #Worst Case
-                    print(average)
-                    for x in range(3):
-                        y = 10 ** (x+2)
-                        
-                        array = genArray(y).sort(reverse=True)
-                        
-                        t1 = time.perf_counter()
-                        #call bubble sort on array
-                        t2 = time.perf_counter()
-                        
-                        print(nTest % (y, t2-t1))
-                    while True:
-                        user = input('\n' + nMes)
-                        if user.lower() == "y":
-                            user = input(nWhat)
-                            try:
-                                int(user)
-                            except:
-                                print(error)
-                            else:
-                                array = genArray(int(user)).sort(reverse=True)
-                                
-                                t1 = time.perf_counter()
-                                #call bubble sort on array
-                                t2 = time.perf_counter()
-                                
-                                print(nTest % (int(user), t2-t1))
-                        else:
-                            break
-                        
-                    
+                if user in ["1", "2", "3"]: #Cases
+                    handleCase(user, sort.bubbleSort)
                 elif user == "4": #Exit Case
                     break
-                
                 else:
                     print(error)
+
         elif user == "2": #Merge Sort
-            print(caseMenu % ("Merge Sort", "merge sort test"))
-            user = input(caseMes) #Choose best, average, worst, exit case
-            print ()
-            
-            if user == "1": #Best Case
-                print(best)
-                for x in range(3):
-                    y = 10 ** (x+2)
-                    
-                    array = genArray(y).sort()
-                    
-                    t1 = time.perf_counter()
-                    sort.mergeSort(array, 0, (len(array)-1))
-                    t2 = time.perf_counter()
-                    
-                    print(nTest % (y, t2-t1))
-                while True:
-                    user = input('\n' + nMes)
-                    if user.lower() == "y":
-                        user = input(nWhat)
-                        try:
-                            array = genArray(int(user)).sort()
-                        except:
-                            print(error)
-                        else:
-                            array = genArray(int(user)).sort()
-                            
-                            t1 = time.perf_counter()
-                            sort.mergeSort(array, 0, (len(array)-1))
-                            t2 = time.perf_counter()
-                            
-                            print(nTest % (int(user), t2-t1))
-                    else:
-                        break
-            elif user == "2": #Average Case
-                print(average)
-                for x in range(3):
-                    y = 10 ** (x+2)
-                    
-                    array = genArray(y)
-                    
-                    t1 = time.perf_counter()
-                    sort.mergeSort(array, 0, (len(array)-1))
-                    t2 = time.perf_counter()
-                    
-                    print(nTest % (y, t2-t1))
-                while True:
-                    user = input('\n' + nMes)
-                    if user.lower() == "y":
-                        user = input(nWhat)
-                        try:
-                            int(user)
-                        except:
-                            print(error)
-                        else:
-                            array = genArray(int(user))
-                            
-                            t1 = time.perf_counter()
-                            sort.mergeSort(array, 0, len(array)-1)
-                            t2 = time.perf_counter()
-                            
-                            print(nTest % (int(user), t2-t1))
-                    else:
-                        break
-            elif user == "3": #Worst Case
-                print(average)
-                for x in range(3):
-                    y = 10 ** (x+2)
-                    
-                    array = genArray(y).sort(reverse=True)
-                    
-                    t1 = time.perf_counter()
-                    sort.mergeSort(array, 0, len(array)-1)
-                    t2 = time.perf_counter()
-                    
-                    print(nTest % (y, t2-t1))
-                while True:
-                    user = input('\n' + nMes)
-                    if user.lower() == "y":
-                        user = input(nWhat)
-                        try:
-                            int(user)
-                        except:
-                            print(error)
-                        else:
-                            array = genArray(int(user)).sort(reverse=True)
-                            
-                            t1 = time.perf_counter()
-                            sort.mergeSort(array, 0, (len(array)-1))
-                            t2 = time.perf_counter()
-                            
-                            print(nTest % (int(user), t2-t1))
-                    else:
-                        break
-                    
+            while True:
+                print(caseMenu % ("Merge", "merge"))
+                user = input(caseMes) #Choose best, average, worst, exit case
+                print ()
                 
-            elif user == "4": #Exit Case
-                break
-            
-            else:
-                print(error)
+                if user in ["1", "2", "3"]: #Cases
+                    handleCase(user, sort.mergeSort)
+                elif user == "4": #Exit Case
+                    break
+                else:
+                    print(error)
+
         elif user == "3": #Quick Sort
-            pass
-        elif user == "4": #??? Sort
-            pass
+            while True:
+                print(caseMenu % ("Quick", "quick"))
+                user = input(caseMes) #Choose best, average, worst, exit case
+                print()
+                
+                if user in ["1", "2", "3"]:
+                    handleCase(user, sort.quickSort)
+                elif user == "4": # Exit Case
+                    break
+                else:
+                    print(error)
+                
+        elif user == "4": #Insert Sort
+            while True:
+                print(caseMenu % ("Insertion", "insertion"))
+                user = input(caseMes) #Choose best, average, worst, exit case
+                print ()
+                
+                if user in ["1", "2", "3"]: #Cases
+                    handleCase(user, sort.insertionSort)
+                elif user == "4": #Exit Case
+                    break
+                else:
+                    print(error)
+
         elif user == "5": #Exit
             break
         else: #Errorcase

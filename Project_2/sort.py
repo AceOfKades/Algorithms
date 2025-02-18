@@ -2,7 +2,7 @@
 """
 Created 2/7/2025
 """
-
+import random
 
 ### MERGE SORT FUNCTIONS
 def merge (array, left, mid, right):
@@ -57,7 +57,7 @@ def mergeSort(arr, left, right):
         mergeSort(arr, mid + 1, right)
         merge(arr, left, mid, right)
         
-        
+
 def insertionSort(arr):
     for i in range(1, len(arr)):
         key = arr[i]
@@ -70,3 +70,35 @@ def insertionSort(arr):
             arr[j + 1] = arr[j]
             j -= 1
         arr[j + 1] = key
+
+def bubble_Sort(numbers):
+    
+    def swap(i, j):
+        numbers[i], numbers[j] = numbers[j], numbers[i]
+
+    n = len(numbers)
+    swapped = True
+    
+    x = -1
+    while swapped:
+        swapped = False
+        x = x + 1
+        for i in range(1, n-x):
+            if numbers[i - 1] > numbers[i]:
+                swap(i - 1, i)
+                swapped = True
+                    
+    return numbers
+
+    
+def Quick_Sort(numbers):
+    if len(numbers) <= 1:
+        return numbers  # Base case: already sorted
+
+    pivot = random.choice(numbers)  # Pick a random pivot
+
+    left = [x for x in numbers if x < pivot]   # Elements smaller than pivot
+    middle = [x for x in numbers if x == pivot]  # Elements equal to pivot
+    right = [x for x in numbers if x > pivot]  # Elements greater than pivot
+
+    return Quick_Sort(left) + middle + Quick_Sort(right)

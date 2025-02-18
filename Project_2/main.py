@@ -11,41 +11,37 @@ import random
 div = "\n-------------------------\n"
 
 error = "Invalid input\n"
-
-def printArray(array):
-    for x in array:
-        print(x, end = " ")
-    print('\n')
+## Supporting Driver Arrays
     
-def genArray(n, case_type):
+def genArray(n, case_type): #generate an array
     
-    array = random.sample(range(10*n), n)
+    array = random.sample(range(10*n), n) #generate an array of random numbers
     
-    if case_type == "1":
+    if case_type == "1": # if best case, sort
         array.sort()
-    elif case_type == "3":
+    elif case_type == "3": # if worst case, sort and reverse
         array.sort(reverse = True)
     
-    return array
+    return array 
 
 
-def runTest (algorithm, array):
-    t1 = time.perf_counter()
+def runTest (algorithm, array): #test an algorithm
+    t1 = time.perf_counter() #start timer
     
-    if algorithm == sort.mergeSort:
+    if algorithm == sort.mergeSort: #if operating merge sort, input necessary parameters
         algorithm(array, 0, len(array)-1)
     else:
         algorithm(array)
         
-    t2 = time.perf_counter();
+    t2 = time.perf_counter(); #end timer
     
-    return t2 - t1
+    return t2 - t1 #return time
     
 
-def handleCase(case_type, algorithm):
+def handleCase(case_type, algorithm): #operate driver functions on an algorithm and case
     
-    
-    nTest = "For N = %d,\t it takes %.6f seconds"
+    #string literal variables for easy rewriting if necessary
+    nTest = "For N = %d,\t it takes %.6f seconds" #for N = 100/1000/10000/etc it takes x.xxxxxx seconds
     nMes = "Do you want to input another N (Y/N)? "
     nWhat = "What is the N? "
     
@@ -61,31 +57,29 @@ def handleCase(case_type, algorithm):
 
     print(caseMessages.get(case_type, "Invalid case"))
     
-    for x in range(3):
-        y = 10 ** (x+2)
+    for x in range(3): 
+        y = 10 ** (x+2) #10 ^ 2, 3, 4; 100, 1,000, 10,000
         
-        array = genArray(y, case_type)
+        array = genArray(y, case_type) #create an array based on current size y and case chosen
         
-        time = runTest(algorithm, array)
+        time = runTest(algorithm, array) #collect time from algorithm test
         
-        print(nTest % (y, time))
+        print(nTest % (y, time)) #print result
         
-    while True:
-        user = input('\n' + nMes)
-        if user.lower() == "y":
-            user = input(nWhat)
-            try:
-                if case_type == "2": 
-                    array = genArray(int(user))
-                else:
-                    array = genArray(int(user), case_type)
-                    
-                time = runTest(algorithm, array)
+    while True: #loop while user generates N
+        user = input('\n' + nMes) #input N yes/no
+        if user.lower() == "y": #if yes
+            user = input(nWhat) #input number
+            try: #test if input is valid for functions
                 
-                print(nTest % (int(user), time))
+                array = genArray(int(user), case_type) #generate array with user input
+                    
+                time = runTest(algorithm, array) #test algorithm
+                
+                print(nTest % (int(user), time)) #print results
             except:
                 print(error)
-        else:
+        else: #if not yes, break
             break
         
     
@@ -115,7 +109,7 @@ if __name__ == "__main__":
                 print ()
                 
                 if user in ["1", "2", "3"]: #Cases
-                    handleCase(user, sort.bubbleSort)
+                    handleCase(user, sort.bubble_Sort)
                 elif user == "4": #Exit Case
                     break
                 else:
@@ -141,7 +135,7 @@ if __name__ == "__main__":
                 print()
                 
                 if user in ["1", "2", "3"]:
-                    handleCase(user, sort.quickSort)
+                    handleCase(user, sort.Quick_Sort)
                 elif user == "4": # Exit Case
                     break
                 else:

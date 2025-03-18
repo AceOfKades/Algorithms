@@ -1,5 +1,51 @@
-import sys
+
 import math
+import sys
+import time
+import heapq
+#import resource
+from itertools import groupby
+from collections import defaultdict
+def compute_scc(graph):
+    # Step 1: DFS to fill the stack with vertices in order of finishing times
+    def dfs_fill_stack(u, visited, stack):
+        visited.add(u)
+        for v in graph[u]:
+            if v not in visited:
+                dfs_fill_stack(v, visited, stack)
+        stack.append(u)
+
+    # Step 2: DFS on the reversed graph to find SCCs
+    def dfs_reverse(u, visited, component, reversed_graph):
+        visited.add(u)
+        component.append(u)
+        for v in reversed_graph[u]:
+            if v not in visited:
+                dfs_reverse(v, visited, component, reversed_graph)
+
+    # Step 3: Reverse the graph
+    reversed_graph = defaultdict(set)
+    for u in graph:
+        for v in graph[u]:
+            reversed_graph[v].add(u)
+
+    # Step 4: Find SCCs
+    stack = []
+    visited = set()
+    for u in graph:
+        if u not in visited:
+            dfs_fill_stack(u, visited, stack)
+
+    visited = set()
+    sccs = {}
+    while stack:
+        u = stack.pop()
+        if u not in visited:
+            component = []
+            dfs_reverse(u, visited, component, reversed_graph)
+            sccs[u] = component
+
+    return sccs
 
 
 # http://eddmann.com/posts/depth-first-search-and-breadth-first-search-in-python/
@@ -25,7 +71,7 @@ def bfs_paths(graph, start, goal):
             else:
                 queue.append((next, path + [next]))
 
-    
+
 
 
 if __name__ == "__main__":
@@ -52,7 +98,7 @@ if __name__ == "__main__":
     One = list(bfs_paths(graphforquestionone,'A','F'))
     print(One,"\n\n")
 ###################################################################
-
+    start = time.time()
     Graphforquestiontwo = {'1': set(['3']),
                            '2': set(['1']),
                            '3': set(['2','5']),
@@ -65,6 +111,31 @@ if __name__ == "__main__":
                            '10': set(['9','11']),
                            '11': set(['12']),
                            '12': set([])}
+    
+    # Start timing
+    start_time = time.time()
+
+    # Compute SCCs
+    sccs = compute_scc(Graphforquestiontwo)
+
+    # End timing
+    end_time = time.time()
+    execution_time = end_time - start_time
+
+    # Print SCCs
+    print("Strongly connected components are:")
+    for key in sccs:
+        print(sccs[key])
+
+    # Find the top 5 largest SCCs
+    top_5 = heapq.nlargest(5, sccs, key=lambda x: len(sccs[x]))
+    result = []
+    for i in range(5):
+        try:
+            result.append(len(sccs[top_5[i]]))
+        except:
+            result.append(0)
+     
 
     
     

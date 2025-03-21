@@ -2,7 +2,42 @@ import heapq
 import math
 import sys
 import time
+from collections import defaultdict, deque
 
+def topological_sort(graph):
+    # Compute in-degrees
+    in_degree = {node: 0 for node in graph}
+    for node in graph:
+        for neighbor in graph[node]:
+            in_degree[neighbor] += 1
+
+    # Initialize queue with nodes having in-degree 0
+    queue = deque([node for node in in_degree if in_degree[node] == 0])
+    topo_order = []
+
+    # Process nodes
+    while queue:
+        node = queue.popleft()
+        topo_order.append(node)
+        for neighbor in graph[node]:
+            in_degree[neighbor] -= 1
+            if in_degree[neighbor] == 0:
+                queue.append(neighbor)
+
+    return topo_order
+
+# Meta graph as a DAG
+meta_graph = {
+    'SCC1': ['SCC2', 'SCC5'],
+    'SCC2': ['SCC3'],
+    'SCC3': ['SCC4'],
+    'SCC4': ['SCC5'],
+    'SCC5': []
+}
+
+# Perform topological sort
+topo_order = topological_sort(meta_graph)
+print("Topological Order of Meta Graph:", topo_order)
 #import resource
 from itertools import groupby
 from collections import defaultdict
